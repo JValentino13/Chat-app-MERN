@@ -11,6 +11,7 @@ const login = () => {
     username: '',
     password: '',
   });
+  const [error, setError] = useState({});
   const containerRef = useRef(null);
   const [register, setRegister] = useState(false)
 
@@ -22,9 +23,32 @@ const login = () => {
     }));
   };
 
+  const handleChangeRegister = (e) => {
+    const { name, value } = e.target;
+
+    setFormDataRegister(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Login data:', formDataLogin);
+
+    // validasi input
+    const newError = {};
+
+    if (!formDataLogin.email) {
+      newError.email = 'Isi Emilnya Woyy!!';
+    }
+    if (!formDataLogin.password) {
+      newError.password = 'Passwordnya Juga Setan!!';
+    }
+    setError(newError);
+
+    if(Object.keys(newError).length === 0) {
+      console.log('Login data:', formDataLogin);
+    }
   };
 
   const handleRegister = (e) => {
@@ -39,10 +63,10 @@ const login = () => {
         <h1 className='font-poppins text-[10rem] font-extrabold uppercase'>{register === false ? "Login" : "Register"}<span className='text-white text-stroke-black text-stroke-2'> Page</span></h1>
       </div>
 
-      <div ref={containerRef} className="w-full max-w-6xl flex overflow-hidden relative rounded-md shadow-lg inset-shadow-2xl inset-shadow-black border border-white/20 px-10 bg-white mt-30" >
+      <div ref={containerRef} className="w-full max-w-6xl flex overflow-hidden relative rounded-md shadow-lg inset-shadow-2xl inset-shadow-black border border-white/20 px-10 bg-white mt-32 " >
         
         {/* Sisi Kiri - Login Form */}
-        <div className="w-1/2 p-8">
+        <div className={`w-1/2 p-8 ${register ?  "hidden" : "block"}`} >
           <div className="text-center mb-8 ">
             <h2 className="text-3xl font-bold text-black">Welcome Back!</h2>
             <p className="text-black mt-2">Login to continue your journey</p>
@@ -52,7 +76,7 @@ const login = () => {
             {/* Email*/}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Email Address
+                Email Address {error.email && <span className="text-red-500 text-xs ml-2">{error.email}</span>}
               </label>
               <div className="relative">
                 <input
@@ -60,7 +84,7 @@ const login = () => {
                   name="email"
                   value={formDataLogin.email}
                   onChange={handleChangeLogin}
-                  className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black"
+                  className={`w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black ${error.email ? 'border-red-500' : ''}`}
                   placeholder="Enter your email"
                 />
                 <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +96,7 @@ const login = () => {
             {/* Password */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Password
+                Password {error.password && <span className="text-red-500 text-xs ml-2">{error.password}</span>}
               </label>
               <div className="relative">
                 <input
@@ -80,7 +104,7 @@ const login = () => {
                   name="password"
                   value={formDataLogin.password}
                   onChange={handleChangeLogin}
-                  className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black"
+                  className={`w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black ${error.password ? 'border-red-500' : ''}`}
                   placeholder="Enter your password"
                 />
                 <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,13 +179,13 @@ const login = () => {
         </div>
 
         {/* Sisi Kanan - Register Form */}
-        <div className="w-1/2 p-8">
-          <div className="text-center mb-8 ">
+        <div className={`w-1/2 p-8 ${register ?  "block" : "hidden"}`}>
+          <div className="text-center mb-4 ">
             <h2 className="text-3xl font-bold text-black">Let's Start!</h2>
             <p className="text-black mt-2">Create your new account!</p>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-6 ">
+          <form onSubmit={handleRegister} className="space-y-4 ">
             {/* Email*/}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
@@ -172,7 +196,7 @@ const login = () => {
                   type="email"
                   name="email"
                   value={formDataRegister.email}
-                  onChange={handleChangeLogin}
+                  onChange={handleChangeRegister}
                   className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black"
                   placeholder="Enter your email"
                 />
@@ -192,7 +216,7 @@ const login = () => {
                   type="text"
                   name="username"
                   value={formDataRegister.username}
-                  onChange={handleChangeLogin}
+                  onChange={handleChangeRegister}
                   className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black"
                   placeholder="Enter your Username"
                 />
@@ -212,7 +236,7 @@ const login = () => {
                   type="password"
                   name="password"
                   value={formDataRegister.password}
-                  onChange={handleChangeLogin}
+                  onChange={handleChangeRegister}
                   className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition text-black"
                   placeholder="Enter your password"
                 />
@@ -233,7 +257,7 @@ const login = () => {
             {/* Sign Up Link */}
             <p className="text-center text-black">
               Already have an account?{' '}
-              <button onClick={() => setRegister(!register)} onChange={handleChangeLogin} type="button" className="text-black rounded-[3px] px-2 font-semibold cursor-pointer">
+              <button onClick={() => setRegister(!register)} onChange={handleChangeRegister} type="button" className="text-black rounded-[3px] px-2 font-semibold cursor-pointer">
                 Login
               </button>
             </p>
